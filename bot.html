@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<head>
+    <title>Dictionary_bot</title>
+    <link rel="icon" href="data:,">
+    <link href="{{ url_for('static',filename='css/bot.css')}}" rel="stylesheet" type="text/css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+<style>
+body {
+  margin: 0 auto;
+  max-width: 800px;
+  padding: 0 20px;
+  background-color: cadetblue;
+}
+p{
+    color: black;
+}
+
+.container {
+  border: 2px solid #dedede;
+  background-color: #f1f1f1;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.darker {
+  border-color: #ccc;
+  background-color: #ddd;
+}
+
+.container::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.container img {
+  float: left;
+  max-width: 60px;
+  width: 100%;
+  margin-right: 20px;
+  border-radius: 50%;
+}
+
+.container img.right {
+  float: right;
+  margin-left: 20px;
+  margin-right:0;
+}
+
+.time-right {
+  float: right;
+  color: #aaa;
+}
+
+.time-left {
+  float: left;
+  color: #999;
+}
+
+</style>
+</head>
+<body>
+
+<h2 class="text-right"><strong>DICTIONARY BOT</strong></h2>
+
+<div class="container text-center" id="user">
+  <img src="{{url_for('static', filename='images/user.png')}}" alt="Avatar" style="width:100%;">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <form class="form-inline" onsubmit=" get_user_input();return false;" required>
+    <div class="form-group">
+      <input type="text" class="form-control" id="word" placeholder="Type a word" name="word">
+    </div>
+    <button type="submit" class="btn btn-default">Submit</button>
+  </form>
+</div>
+
+
+<div id="question">
+
+</div>
+<div id="answer">
+
+</div>
+
+
+</body>
+<script>
+
+function get_user_input(){
+    var today = new Date();
+var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+            var word=$("#word").val();
+            question=' '
+            question='<div class="container text-left" id="message">'+'<img src="{{url_for('static', filename='images/user.png')}}" alt="Avatar" style="width:100%;">'+'<p>'+word+'</p>'+'<span class="time-right">'+time+'</span>'+'</div>'
+           
+            $("#question").html(question);
+            $.getJSON("/api/reply",{"word":word},function(result){
+           
+            meaning='<strong>Meaning:</strong> '+result[0]+'<br>'
+            synonyms='<strong>Synonyms:</strong> '+result[1]+'<br>'
+            antonyms='<strong>Antonyms:</strong> '+result[2]+'<br>'
+            console.log(result)
+            var chuma=result
+            console.log(meaning)
+            console.log(synonyms)
+            console.log(antonyms)
+            answer=' '
+            if(typeof(result)=="string"){
+            suggestion='<strong>suggestions:</strong> '+result+'<br>'
+            console.log(suggestion)
+            answer='<div class="container darker text-right" id="bot">'+'<img src="{{url_for('static', filename='images/bot.jpg')}}" alt="Avatar" class="right" style="width:100%;">'+'<p> Maybe th word is misspelled </p>'+'<p>'+suggestion+'</p>'+'<span class="time-left">'+time+'</span>'+'</div>'
+            }
+            else{
+                answer='<div class="container darker text-right" id="bot">'+'<img src="{{url_for('static', filename='images/bot.jpg')}}" alt="Avatar" class="right" style="width:100%;">'+'<p>'+meaning+'</p>'+'<p>'+synonyms+'</p>'+'<p>'+antonyms+'</p>'+'<span class="time-left">'+time+'</span>'+'</div>'
+            }
+        $("#answer").html(answer);
+            });
+            document.getElementById("word").value="";
+            
+
+        }
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+</html>
